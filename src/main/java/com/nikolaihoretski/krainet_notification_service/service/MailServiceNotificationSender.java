@@ -10,6 +10,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class MailServiceNotificationSender {
@@ -20,6 +22,7 @@ public class MailServiceNotificationSender {
     private JavaMailSender mailSender;
     @Autowired
     private EmailService emailService;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     @RabbitListener(queues = "sendemail.queue")
     public void sendEmail(UserDTO dto) {
@@ -34,11 +37,18 @@ public class MailServiceNotificationSender {
         List<String> emails = emailService.getAllEmails();
 
         for (String e : emails) {
-            SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo(e);
-            mail.setSubject(operation + " пользователь " + dto.getUsername());
-            mail.setText(operation + " пользователь с именем-"+dto.getUsername()+",паролем-" + dto.getPassword()+" и почтой-" + dto.getEmail());
-            mailSender.send(mail);
+            executorService.submit(() -> {
+                try {
+                    SimpleMailMessage mail = new SimpleMailMessage();
+                    mail.setTo(e);
+                    mail.setSubject(operation + " пользователь " + dto.getUsername());
+                    mail.setText(operation + " пользователь с именем-" + dto.getUsername() + ",паролем-" + dto.getPassword() + " и почтой-" + dto.getEmail());
+                    mailSender.send(mail);
+                    logger.info("Email sent to {}", e);
+                } catch (Exception ex) {
+                    logger.error("Failed to send email to {}", e, ex);
+                }
+            });
         }
     }
 }
