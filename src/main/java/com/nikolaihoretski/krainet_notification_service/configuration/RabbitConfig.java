@@ -15,27 +15,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE_NAME_REQUEST_EMAILS = "requestemail.queue";
-    private static final String ROUTING_KEY_REQUEST_EMAILS = "requestemail.routing.key.*";
-
     public static final String QUEUE_NAME_GET_EMAIL = "getemail.queue";
-    private static final String ROUTING_KEY_GET_EMAIL = "getemail.routing.key.*";
+    private static final String ROUTING_KEY_GET_EMAIL = "getemail.routing.key";
 
     public static final String QUEUE_NAME_SEND_EMAIL = "sendemail.queue";
     public static final String EXCHANGE = "sendemail.exchange";
-    public static final String ROUTING_KEY_SEND_EMAIL = "sendemail.routing.key.*";
+    public static final String ROUTING_KEY_SEND_EMAIL = "sendemail.routing.key";
 
-    @Bean
-    public Queue requestEmailQueue() {
-        return new Queue(QUEUE_NAME_REQUEST_EMAILS, true);
-    }
-
-    @Bean
+    @Bean("getEmailQueue")
     public Queue getEmailQueue() {
         return new Queue(QUEUE_NAME_GET_EMAIL, true);
     }
 
-    @Bean
+    @Bean("sendEmailQueue")
     public Queue sendEmailQueue() {
         return new Queue(QUEUE_NAME_SEND_EMAIL, true);
     }
@@ -46,8 +38,17 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding binding(@Qualifier("sendEmailQueue") Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_SEND_EMAIL);
+    public Binding bindingSendEmailQueue(@Qualifier("sendEmailQueue") Queue sendEmailQueue, TopicExchange sendEmailExchange) {
+        return BindingBuilder.bind(sendEmailQueue)
+                .to(sendEmailExchange)
+                .with(ROUTING_KEY_SEND_EMAIL);
+    }
+
+    @Bean
+    public Binding bindingGetEmailQueue(@Qualifier("getEmailQueue") Queue getEmailQueue, TopicExchange sendEmailExchange) {
+        return BindingBuilder.bind(getEmailQueue)
+                .to(sendEmailExchange)
+                .with(ROUTING_KEY_GET_EMAIL);
     }
 
     @Bean

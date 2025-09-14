@@ -9,6 +9,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MailServiceNotificationSender {
 
@@ -16,6 +18,8 @@ public class MailServiceNotificationSender {
 
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private EmailService emailService;
 
     @RabbitListener(queues = "sendemail.queue")
     public void sendEmail(UserDTO dto) {
@@ -27,7 +31,7 @@ public class MailServiceNotificationSender {
             default -> "unknown";
         };
 
-        String[] emails = {"nikolai.horetski@yandex.by"};
+        List<String> emails = emailService.getAllEmails();
 
         for (String e : emails) {
             SimpleMailMessage mail = new SimpleMailMessage();
