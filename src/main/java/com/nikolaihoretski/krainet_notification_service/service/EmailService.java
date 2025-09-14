@@ -47,6 +47,7 @@ public class EmailService {
             logger.info("Отправляющий сервер был перезапущен! Email которые уже есть в базе: {}", alreadyExisting);
         }
     }
+
     public List<String> getAllEmails() {
         return emailRepository.findAll().stream().map(EmailEntity::getEmail).toList();
     }

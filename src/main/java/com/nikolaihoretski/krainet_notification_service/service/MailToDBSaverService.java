@@ -15,6 +15,5 @@ public class MailToDBSaverService {
     public void saveEmail(EmailDTO emailDTO) {
 
         emailService.saveEmails(emailDTO.getEmails());
-
     }
 }
