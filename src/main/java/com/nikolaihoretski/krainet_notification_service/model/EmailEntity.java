@@ -40,4 +40,12 @@ public class EmailEntity {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "EmailEntity{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
