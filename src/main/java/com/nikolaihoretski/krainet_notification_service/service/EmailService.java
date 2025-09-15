@@ -44,7 +44,7 @@ public class EmailService {
                 .toList();
 
         if (!alreadyExisting.isEmpty()) {
-            logger.info("Отправляющий сервер был перезапущен! Email которые уже есть в базе: {}", alreadyExisting);
+            logger.info("Email которые уже есть в базе: {}", alreadyExisting);
         }
     }
 

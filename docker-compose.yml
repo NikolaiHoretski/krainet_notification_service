@@ -1,0 +1,16 @@
+services:
+  krainet_notification_service:
+    build: .
+    container_name: krainet_notification_service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL
+      - SPRING_DATASOURCE_USERNAME
+      - SPRING_DATASOURCE_PASSWORD
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    external: true
