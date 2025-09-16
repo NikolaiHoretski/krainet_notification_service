@@ -1,6 +1,7 @@
 package com.nikolaihoretski.krainet_notification_service.service;
 
 import com.nikolaihoretski.krainet_notification_service.dto.UserDTO;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -51,7 +52,7 @@ public class MailServiceNotificationSender {
             });
         }
     }
-
+    @PreDestroy
     public void shutdown() {
         logger.info("shutdown executorService ...");
         executorService.shutdown();
