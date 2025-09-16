@@ -51,4 +51,9 @@ public class MailServiceNotificationSender {
             });
         }
     }
+
+    public void shutdown() {
+        logger.info("shutdown executorService ...");
+        executorService.shutdown();
+    }
 }
